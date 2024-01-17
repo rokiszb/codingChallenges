@@ -1,0 +1,29 @@
+#!/bin/php
+
+# [number of lines] [number of words] [number of characters] [number of bytes]
+
+<?php
+
+$line_count = 0;
+$byteCount = 0;
+$wordCount = 0;
+
+$handle = fopen($argv[1], "r");
+
+if ($handle) {
+    while (($buffer = fgets($handle, 4096)) !== false) {
+        $explode = explode(' ', $buffer);
+        $filtered = array_filter($explode, function($value) {
+            $trimmedValue = trim($value);
+            return !empty($trimmedValue);
+        });
+        $wordCount += count($filtered);
+        $byteCount += strlen($buffer);
+        $line_count++;
+    }
+} else {
+    echo 'Unexpected error opening file';
+}
+fclose($handle);
+
+echo "{$line_count} {$wordCount} {$byteCount} {$argv[0]}" . PHP_EOL;
